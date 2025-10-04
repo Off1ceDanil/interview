@@ -1,4 +1,4 @@
-<!-- vscode打开方式:开始时ctrl+~,输入 npm run dev回车,然后ctrl点那个域名就能打开-->
+<!-- vscode打开方式:开始时ctrl+~,输入 npm run dev回车,然后ctrl点本地端口号-->
 <template>
   <div id="app">
     <!-- 表单页面 -->
