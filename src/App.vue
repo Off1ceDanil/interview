@@ -82,16 +82,12 @@
         </div>
 
         <!-- 添加弹窗 -->
-        <div v-if="showOtherHobbyModal" class="modal-overlay" @click="cancelOtherHobby">
-          <div class="modal-content" @click.stop>
-            <h3>填写其他兴趣爱好</h3>
-            <textarea v-model="tempOtherHobby" placeholder="请输入您的其他兴趣爱好..." rows="4" class="modal-textarea"></textarea>
-            <div class="modal-actions">
-              <button @click="saveOtherHobby" class="btn primary">保存</button>
-              <button @click="cancelOtherHobby" class="btn secondary">取消</button>
-            </div>
-          </div>
-        </div>
+        <OtherHobbyModal 
+        :show="showOtherHobbyModal"
+        :current-value="formData.otherHobby"
+        @update:show="showOtherHobbyModal = $event"
+        @save="saveOtherHobby"
+      />
 
         <div class="form-group">
           <label for="bio">个人简介</label>
@@ -161,22 +157,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import OtherHobbyModal from './components/OtherHobbyModal.vue'
+import { type FormData } from '@/types'
 
 // 添加页面状态
 const currentPage = ref('form') // 'form' 或 'success'
-
-interface FormData {
-  username: string
-  email: string
-  password: string
-  confirmPassword: string
-  phone: string
-  gender: string
-  hobbies: string[]
-  otherHobby: string
-  bio: string
-  agreeTerms: boolean
-}
 
 const formData = reactive<FormData>({
   username: '',
@@ -221,7 +206,7 @@ const getHobbiesText = (hobbies: string[]) => {
     'sports': '运动',
     'music': '音乐',
     'travel': '旅行',
-    'other': formData.otherHobby ? `其他：${formData.otherHobby}` : '其他' // 修改这一行
+    'other': formData.otherHobby ? `其他：${formData.otherHobby}` : '其他' 
   }
   
   return hobbies.map(hobby => hobbyMap[hobby] || hobby).join('，')
@@ -312,7 +297,8 @@ const backToForm = () => {
 
 const handleConfirm = () => {
   alert('信息确认完成！')
-  // 这里可以添加实际的后端提交逻辑
+  // 这里添加一个返回注册界面的代码
+  currentPage.value = 'form'
 }
 
 // 在这里添加以下函数
@@ -321,20 +307,16 @@ const openOtherHobbyModal = () => {
   showOtherHobbyModal.value = true
 }
 
-const saveOtherHobby = () => {
-  formData.otherHobby = tempOtherHobby.value
+const saveOtherHobby = (value: string) => {
+  formData.otherHobby = value
   // 如果填写了内容，自动勾选其他选项
-  if (tempOtherHobby.value.trim()) {
+  if (value.trim()) {
     if (!formData.hobbies.includes('other')) {
       formData.hobbies.push('other')
     }
   }
-  showOtherHobbyModal.value = false
 }
 
-const cancelOtherHobby = () => {
-  showOtherHobbyModal.value = false
-}
 
 // 当取消勾选"其他"时清空内容
 const handleOtherCheckboxChange = (checked: boolean) => {
@@ -344,6 +326,7 @@ const handleOtherCheckboxChange = (checked: boolean) => {
 }
 </script>
 
+
 <style>
 * {
   margin: 0;
@@ -351,6 +334,7 @@ const handleOtherCheckboxChange = (checked: boolean) => {
   box-sizing: border-box;
 }
 
+/* 背景 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-image: url(./images/background.jpg);
@@ -369,6 +353,7 @@ body {
   min-width: 60vw;
 }
 
+/* 中间部分 */
 .container {
   background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%,rgba(102, 226, 207,0.4) 50%, rgba(243, 250, 107, 0.7) 100%);
   border-radius: 12px;
@@ -380,14 +365,16 @@ body {
 
 .header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 30px;  
 }
 
+/* 标题 */
 .header h1 {
   color: #030202;
   font-size: 2rem;
   margin-bottom: 8px;
 }
+
 
 .header p {
   color: #0829fa;
@@ -576,7 +563,7 @@ input:hover {
 
 @media (max-width: 768px) {
   body {
-    background-image: url();
+    background-image: url(./images/background.jpg);
   }
   .form-row {
     grid-template-columns: 1fr;
