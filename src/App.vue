@@ -353,7 +353,7 @@ body {
   min-width: 60vw;
 }
 
-/* 中间部分 */
+/* 表单内容背景 */
 .container {
   background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%,rgba(102, 226, 207,0.4) 50%, rgba(243, 250, 107, 0.7) 100%);
   border-radius: 12px;
